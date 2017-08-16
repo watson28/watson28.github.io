@@ -1,0 +1,714 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Testing React Components</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<link rel="stylesheet" href="lib/css/base-min.css">
+		<link rel="stylesheet" href="lib/css/grids-min.css">
+		<link rel="stylesheet" href="lib/css/league-custom.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h1>React.js</h1>
+					<h3>Testing React Components</h3>
+					<p>
+						<small>Created by <a href="mailto:jorge.florian@globant.com">Jorge Florian</a> / Transformers Pod</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Introduction to Javascript Testing</h3>
+					<p class="fragment">How does it work?</p>
+				</section>				
+
+				<section>
+					<h2>Frameworks/Libraries/Tools for testing</h2>
+					<div class="pure-g">
+						<div class="pure-u-1-3"><img src="lib/img/mocha.svg" alt="Mocha" /></div>
+						<div class="pure-u-1-3"><img src="lib/img/chai.png" alt="Chai" /></div>
+						<div class="pure-u-1-3"><img src="lib/img/karma.png" alt="Karma" /></div>
+					</div>
+					<div class="pure-g">
+						<div class="pure-u-1-3"><img src="lib/img/jasmine.png" alt="JasmineJS" /></div>
+						<div class="pure-u-1-3"><img src="lib/img/nodejs.png" alt="NodeJS" /></div>
+						<div class="pure-u-1-3"><img src="lib/img/phamtomjs.png" alt="Phamtomjs" /></div>
+					</div>
+				</section>
+
+				<section>
+					<h2>Mocha framework</h2>
+					<div class="pure-g">
+						<div class="pure-u-1-5"><img src="lib/img/mocha.svg" alt="Mocha" /></div>
+						<div class="pure-u-4-5">
+							<ul style="font-size: 0.8em;">
+								<li>A feature-rich JavaScript test framework</li>
+								<li>Runs on Node.js and in the browser</li>
+								<li>Test coverage reporting</li>
+								<li>Use any assertion library you want</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h2>Getting started with Mocha</h2>
+					<pre><code class="shell">
+$ npm install mocha
+$ mkdir test
+$ $EDITOR test/test.js
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Radiography of a test file</h2>
+					<pre><code class="hljs" style="font-size: 16px;">
+describe('[Name of the class/component to test]', function() {
+
+  before(function() {
+    // runs before all tests in this block
+  });
+
+  after(function() {
+    // runs after all tests in this block
+  });
+
+  beforeEach(function() {
+    // runs before each test in this block
+  });
+
+  afterEach(function() {
+    // runs after each test in this block
+  });
+
+  // test cases
+  it('should ....', function () {
+    // first test case
+  });
+});
+					</code></pre>
+				</section>
+
+
+				<section>
+					<pre><code class="javascript" data-trim contenteditable style="font-size: 20px;">
+var assert = require('assert');
+
+describe('Array', function() {
+  describe('#indexOf()', function() {
+    it('should return -1 when the value is not present', function() {
+      assert.equal(-1, [1,2,3].indexOf(4));
+    });
+  });
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<pre><code class="shell">
+$ ./node_modules/mocha/bin/mocha
+
+  Array
+    #indexOf()
+      ✓ should return -1 when the value is not present
+
+
+  1 passing (9ms)
+					</code></pre>
+				</section>
+
+				<section>
+					<ul>
+						<li>tests are running under Nodejs</li>
+						<li>Our Javascript code should be tested under a Browser environment</li>
+						<li>We need to find a way to run our code in a Browser</li>
+					</ul>
+				</section>
+
+				<section>
+					<img src="lib/img/karma.png" alt="Karma logo" />
+					<p>
+						A tool which spawns a web server that executes source code against test code for each of the browsers connected.
+					</p>
+				</section>
+
+				<section>
+					<pre><code class="shell">
+$ npm install --save-dev karma karma-mocha karma-chrome-launcher
+					</code></pre>
+
+					<pre><code class="javascript">
+module.exports = function (config) {
+    config.set({
+        frameworks: ['mocha'],
+        files: ['test/**/*.js'],
+        browsers: ['Chrome'],
+        singleRun: true
+    });
+};
+					</code></pre>
+				</section>
+
+				<section>
+					<p>Configure browserify</p>
+					<pre><code class="shell">
+$ npm install --save-dev browserify karma-browserify
+					</code></pre>
+
+					<pre><code class="javascript">
+module.exports = function (config) {
+    config.set({
+        frameworks: ['mocha', 'browserify'],
+        files: ['test/**/*.js'],
+        preprocessors: {
+        'test/**/*.js': [ 'browserify']
+        },
+        browsers: ['Chrome'],
+        browserify: {
+            debug: true
+        },
+        singleRun: true
+    });
+};
+					</code></pre>
+				</section>
+
+				<section data-background-video="lib/video/karma-running-chrome.mp4" data-background-video-loop data-background-video-muted>
+				</section>
+
+				<section>
+					<p>Lets remove the emergency browser windows with PhantomJS</p>
+					<pre><code class="shell">
+$ npm install --save-dev karma-phantomjs-launcher
+					</code></pre>
+				</section>
+
+				<section data-background-video="lib/video/karma-running-phantom.mp4" data-background-video-loop data-background-video-muted>
+				</section>
+
+				<section>
+					<img src="lib/img/chai.png" alt="Karma logo" />
+					<p>assertion library for node and the browser that can be delightfully paired with any javascript testing framework.</p>
+					<div class="pure-g">
+						<div class="pure-u-1-2	">
+							<pre><code class="js" style="font-size: 20px;">
+chai.should();
+
+foo.should.be.a('string');
+foo.should.equal('bar');
+foo.should.have.lengthOf(3);
+tea.should.have.property('flavors')
+.with.lengthOf(3);
+							</code></pre>
+						</div>
+						<div class="pure-u-1-2">
+							<pre><code class="js" style="font-size: 20px;">
+var expect = chai.expect;
+
+expect(foo).to.be.a('string');
+expect(foo).to.equal('bar');
+expect(foo).to.have.lengthOf(3);
+expect(tea).to.have.property('flavors')
+	.with.lengthOf(3);
+							</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section>
+						<pre><code class="javascript" data-trim contenteditable style="font-size: 20px;">
+//var assert = require('assert');
+var expect = chai.expect;
+
+describe('Array', function() {
+    describe('#indexOf()', function() {
+        it('should return -1 when the value is not present', function() {
+            //assert.equal(-1, [1,2,3].indexOf(4));
+            expect([1,2,3].indexOf(4)).to.equal(-1);
+        });
+    });
+});
+						</code></pre>
+				</section>
+
+				<section>
+					<h2>Tools for the testing environment</h2>
+					<img src="lib/img/mocha.svg" alt="Mocha">
+					<div class="pure-g">
+						<div class="pure-u-1-3">
+							<img src="lib/img/karma.png" alt="Karma">
+						</div>
+						<div class="pure-u-1-3">
+							<img src="lib/img/phantomjs.png" alt="PhantomJS">
+						</div>
+						<div class="pure-u-1-3">
+							<img src="lib/img/chai.png" alt="Chai">
+						</div>
+							
+					</div>
+				</section>
+
+				<section>
+					<h1>React Testing</h1>
+				</section>				
+
+				<section>
+					<div class="pure-g">
+						<div class="pure-u-1-2">
+							<h3 style="line-height: 8em;">How do I test components?</h3>
+						</div>
+						<div class="pure-u-1-2">
+							<img src="lib/img/how-to-test-component.gif" alt="coder doesnt know how to test components">
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<blockquote cite="https://www.toptal.com/react/how-react-components-make-ui-testing-easy">
+						Front-end code isn’t about manipulating data. It’s about user events and rendering the right views at the right time. Front-ends are about users.						
+					</blockquote>
+				</section>
+
+				<section>
+					<h2>Most tests will follow the same pattern:</h2>
+					<ol>
+						<li>Mock component dependencies, props and context.</li>
+						<li>Render.</li>
+						<li>Find specific node.</li>
+						<li>Check contents.</li>
+					</ol>
+				</section>
+
+				<section>
+					<h2>React Test Utility</h2>
+					<small style="font-family: monospace;">require('react-dom/test-utils')</small>
+
+					<div class="pure-g" style="font-size: 24px; line-height: 1.6em;">
+						<div class="pure-u-1-2">
+							<ul>
+								<li>Simulate</li>
+								<li>renderIntoDocument()</li>
+								<li>mockComponent()</li>
+								<li>isElement()</li>
+								<li>isElementOfType()</li>
+								<li>isDOMComponent()</li>
+								<li>isCompositeComponent()</li>
+							</ul>
+						</div>
+						<div class="pure-u-1-2">
+							<ul>
+								<li>isCompositeComponentWithType()</li>
+								<li>findAllInRenderedTree()</li>
+								<li>scryRenderedDOMComponentsWithClass()</li>
+								<li>findRenderedDOMComponentWithClass()</li>
+								<li>scryRenderedDOMComponentsWithTag()</li>
+								<li>findRenderedDOMComponentWithTag()</li>
+								<liscryRenderedComponentsWithType()></li>
+								<li>findRenderedComponentWithType()</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h2>
+						Example:
+						<a target="_blank" href="react-examples/water/index.html?component=water">
+							Water component
+						</a>
+					</h2>
+					<pre><code class="hljs" style="font-size: 14px;">
+var React = require('react');
+var createReactClass = require('create-react-class');
+var PropTypes = require('prop-types');
+
+var Water = createReactClass({
+
+    propTypes: {
+        initialTempeture: PropTypes.number
+    },
+
+    getInitialState: function () {
+        return {
+            tempeture: this.props.initialTempeture.toString()
+        };
+    },
+
+    render: function () {
+        return (
+            <div>
+                <input type="number" onChange={this.setTemperature} value={this.state.tempeture} />
+                {this.renderMessage()}
+            </div>
+        );
+    },
+
+    renderMessage: function () {
+        var message;
+
+        if (this.isNumeric(this.state.tempeture)) {
+            message = this.renderWaterMessage(parseInt(this.state.tempeture, 10));
+        } else {
+            message = this.renderIvalidTempetureMessage();
+        }
+
+        return message;
+    },
+
+    renderWaterMessage: function (tempeture) {
+        var matterState = this.getMatterState(tempeture);
+
+        return (
+            <p className={matterState-'water'}>
+                At {this.state.tempeture}°C, water is considered to be a "{matterState.toUpperCase()}" state of matter.
+            </p>
+        );
+    },
+
+    renderIvalidTempetureMessage: function () {
+        return (
+            <p>Invalid tempeture!!</p>
+        );
+    },
+
+    setTemperature: function (e) {
+        this.setState({
+            tempeture: e.target.value,
+        });
+    },
+
+    getMatterState: function (tempeture) {
+        var state;
+
+        if (this.state.tempeture <= 0) {
+            state = 'solid';
+        } else if (this.state.tempeture >= 100) {
+            state = 'gas';
+        } else {
+            state = 'liquid';
+        }
+
+        return state;
+    },
+
+    isNumeric: function (string) {
+        return  string.length > 0 && !isNaN(string);
+    }
+});
+
+module.exports = Water;
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Let's test our Water component</h2>
+					<pre><code class="hljs" style="font-size: 16px;">
+describe('Water component', function () {
+    var renderedComponent;
+    var textElement;
+    var mockProps = {initialTempeture: '18'}
+    
+    beforeEach(function () {
+        renderedComponent = ReactTestUtils.renderIntoDocument(<Water {...mockProps} />);
+        textElement = ReactTestUtils.findRenderedDOMComponentWithTag(renderedComponent, 'p');
+    });
+    
+    it('should render with initial tempeture', function () {
+        expect(textElement.innerHTML).to.include('LIQUID');
+    });
+    
+    ...
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Water component: change tempeture</h2>
+					<pre><code class="js" style="font-size: 16px;">
+it('should be gas when tempeture is above 100 celcious degree', function () {
+	var input = ReactTestUtils.findRenderedDOMComponentWithTag(renderedComponent, 'input');
+	input.value = '150';
+	ReactTestUtils.Simulate.change(input);
+	
+	expect(textElement.innerHTML).to.include('GAS');
+});
+
+it('should be solid when tempeture is above 0 celcious degree', function () {
+	var input = ReactTestUtils.findRenderedDOMComponentWithTag(renderedComponent, 'input');
+	input.value = '-10';
+	ReactTestUtils.Simulate.change(input);
+	
+	expect(textElement.innerHTML).to.include('SOLID');
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>
+						Adding depedencies to
+						<a target="_blank" href="react-examples/water-dependency/index.html?component=water">
+							Water Component
+						</a>
+					</h2>
+					<pre><code class="js" style="font-size: 14px;">
+var React = require('react');
+var createReactClass = require('create-react-class');
+var PropTypes = require('prop-types');
+var envWeatherService = require('services/environmentWeather');
+
+var Water = createReactClass({
+
+    propTypes: {
+        initialTempeture: PropTypes.number
+    },
+
+    getInitialState: function () {
+        return {
+            tempeture: this.props.initialTempeture.toString(),
+            AtmosphericPressure: null,
+            loading: true,
+            error: null
+        };
+    },
+
+    componentDidMount: function () {
+        var self = this;
+
+        self.setState({loading: true});
+        envWeatherService.getAtmosphericPressure().then(function (pressure) {
+            self.setState({
+                loading: false,
+                AtmosphericPressure: pressure
+            });
+        }).catch(function (error) {
+            self.setState({
+                loading: false,
+                AtmosphericPressure: 760,
+                error: error
+            });
+        });
+    },
+
+    render: function () {
+        return this.state.loading ? this.renderLoading() : this.renderDefault();
+    },
+
+    renderLoading: function () {
+        return <p>Loading!!...</p>
+    },
+
+    renderDefault: function () {
+        return (
+            <div>
+                <input type="number" onChange={this.setTemperature} value={this.state.tempeture} />
+                {this.renderMessage()}
+            </div>
+        );
+    },
+
+    renderMessage: function () {
+        var message;
+
+        if (this.isNumeric(this.state.tempeture)) {
+            message = this.renderWaterMessage(parseInt(this.state.tempeture, 10));
+        } else {
+            message = this.renderIvalidTempetureMessage();
+        }
+
+        return message;
+    },
+
+    renderWaterMessage: function (tempeture) {
+        var meltingPoint = this.getMeltingPoing();
+        var boilingPoing = this.getBoilingPoint();
+        var matterState = this.getMatterState(tempeture, meltingPoint, boilingPoing);
+
+        return (
+            <p className={matterState-'water'}>
+                At {this.state.tempeture}°C, water is considered to be a "{matterState.toUpperCase()}" state of matter.
+            </p>
+        );
+    },
+
+    renderIvalidTempetureMessage: function () {
+        return (
+            <p>Invalid tempeture!!</p>
+        );
+    },
+
+    setTemperature: function (e) {
+        this.setState({
+            tempeture: e.target.value,
+        });
+    },
+
+    getMatterState: function (tempeture, meltingPoint, boilingPoing) {
+        var state;
+
+        if (this.state.tempeture <= meltingPoint) {
+            state = 'solid';
+        } else if (this.state.tempeture >= boilingPoing) {
+            state = 'gas';
+        } else {
+            state = 'liquid';
+        }
+
+        return state;
+    },
+
+    isNumeric: function (string) {
+        return  string.length > 0 && !isNaN(string);
+    },
+
+    getBoilingPoint: function () {
+        var SIDNEY_YOUNG_CONST = 0.00012;
+        var deltaPressure = 760 - this.state.AtmosphericPressure;
+
+        return (100 - 273.15*SIDNEY_YOUNG_CONST*deltaPressure)/(1 + SIDNEY_YOUNG_CONST*deltaPressure);
+    },
+
+    getMeltingPoing: function () {
+        /*NOTE:
+            Melting point does not change drastically as the boiling point.
+            So we'll leave it as a constant.
+        */
+        return 0.0;
+    }
+});
+
+module.exports = Water;
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>How to mock component's dependencies?</h2>
+					<h3>Rewireify</h3>
+					<p>
+						A port of Rewire for Browserify that adds setter and getter methods to each module,
+						allowing you to mock everything in the top-level scope of the module.
+					</p>
+				</section>
+
+				<section>
+					<h2>Rewireify example</h2>
+					<pre><code class="hljs">
+// lib/myModules.js
+
+// With rewire you can change all these variables
+var fs = require("fs"),
+    path = "/somewhere/on/the/disk";
+
+function readSomethingFromFileSystem(cb) {
+    console.log("Reading from file system ...");
+    fs.readFile(path, "utf8", cb);
+}
+
+exports.readSomethingFromFileSystem = readSomethingFromFileSystem;
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Rewireify example</h2>
+					<pre><code>
+var myModule = rewire("../lib/myModule.js");
+var fsMock = {
+    readFile: function (path, encoding, cb) {
+        expect(path).to.equal("/somewhere/on/the/disk");
+        cb(null, "Success!");
+    }
+};
+myModule.__set__("fs", fsMock);
+
+myModule.readSomethingFromFileSystem(function (err, data) {
+    console.log(data); // = Success!
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Testing Water Component with dependency</h2>
+					<pre><code class="js" style="font-size: 16px;">
+beforeEach(function () {
+    var mockPromise = new Promise(function (resolve) {
+        resolve(258.399); // atm pressure in everest
+    });
+	
+    Water.__set__({
+        envWeatherService: {
+            getAtmosphericPressure: function () {
+                return mockPromise;
+            }
+        }
+    });
+
+    renderedComponent = ReactTestUtils.renderIntoDocument(<Water {...mockProps} />);
+    return mockPromise;
+});
+
+it('should boil above 78°C in mount everest', function () {
+    var input = ReactTestUtils.findRenderedDOMComponentWithTag(renderedComponent, 'input');
+    input.value = '79';
+    
+    ReactTestUtils.Simulate.change(input);
+
+    textElement = ReactTestUtils.findRenderedDOMComponentWithTag(renderedComponent, 'p');
+    expect(textElement.innerHTML).to.include('GAS');
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Shallow rendering</h2>
+				</section>
+
+				<section style="text-align: left;">
+					<h1>THE END</h1>
+					<p>
+						- <a href="https://github.com/watson28/react-testing-example">Source code of examples</a><br>
+						- <a href="https://github.com/watson28/react-testing-presentation">Source code of presentation</a>
+					</p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
